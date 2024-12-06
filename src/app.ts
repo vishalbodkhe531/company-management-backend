@@ -1,6 +1,12 @@
+import { config } from "dotenv";
 import express, { NextFunction, Request, Response } from "express";
-import adminRoutes from "./routes/admin.routes.js";
+import { dbConnection } from "./db/dbConnection.js";
 import { errorMiddleware } from "./middlewares/error.middleware.js";
+import adminRoutes from "./routes/admin.routes.js";
+
+config({ path: "./.env" });
+
+dbConnection();
 
 const app = express();
 
@@ -14,6 +20,8 @@ app.use("/api/admin", adminRoutes);
 
 app.use(errorMiddleware);
 
-app.listen(4000, () => {
-  console.log(`Server is working on http://localhost:4000`);
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log(`Server is working on http://localhost:${PORT}`);
 });
