@@ -6,7 +6,7 @@ import errorHandler from "../utils/errorHandler.utile.js";
 
 export const createAdmin = TryCatch(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { email, name, password } = req.body;
+    const { email, name, password, profilePic, gender } = req.body;
 
     if (!email || !name || !password)
       return next(new errorHandler("Fill the all fileds", 400));
@@ -18,7 +18,15 @@ export const createAdmin = TryCatch(
 
     const securePass = bcryptjs.hashSync(password, 10);
 
-    await Admin.create({ name, email, password: securePass });
+    console.log(gender);
+
+    await Admin.create({
+      name,
+      email,
+      password: securePass,
+      profilePic,
+      gender,
+    });
 
     res
       .status(200)
@@ -41,9 +49,7 @@ export const loginAdmin = TryCatch(
 
     if (!matchPass) return next(new errorHandler("Incorrect Password", 400));
 
-    res
-      .status(202)
-      .json({ success: true, message: "Admin successfully Login" });
+    res.status(202).json({ success: true, admin: isExistAdmin });
   }
 );
 

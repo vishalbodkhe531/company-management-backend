@@ -3,6 +3,7 @@ import express, { NextFunction, Request, Response } from "express";
 import { dbConnection } from "./db/dbConnection.js";
 import { errorMiddleware } from "./middlewares/error.middleware.js";
 import adminRoutes from "./routes/admin.routes.js";
+import cors from "cors";
 
 config({ path: "./.env" });
 
@@ -11,6 +12,8 @@ dbConnection();
 const app = express();
 
 app.use(express.json());
+
+app.use(cors());
 
 app.get("/", (req: Request, res: Response, next: NextFunction) => {
   res.send("hello");

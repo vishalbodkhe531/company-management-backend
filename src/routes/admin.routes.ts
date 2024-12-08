@@ -7,7 +7,7 @@ import {
 
 const adminRoutes = express.Router();
 
-adminRoutes.get("/new", createAdmin);
+adminRoutes.post("/new", createAdmin);
 adminRoutes.post("/login", loginAdmin);
 
 adminRoutes.route("/:id").delete(adminRoutes);

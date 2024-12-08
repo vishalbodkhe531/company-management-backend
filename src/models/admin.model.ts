@@ -4,6 +4,8 @@ interface AdminDocument extends Document {
   name: string;
   email: string;
   password: string;
+  profilePic: string;
+  gender: string;
 }
 
 const adminSchema = new Schema<AdminDocument>(
@@ -26,6 +28,18 @@ const adminSchema = new Schema<AdminDocument>(
     password: {
       type: String,
       required: [true, "Password is required"],
+    },
+
+    gender: {
+      type: String,
+      enum: ["male", "female", "other"],
+      required: [true, "Password is required"],
+    },
+
+    profilePic: {
+      type: String,
+      default:
+        "https://static.vecteezy.com/system/resources/thumbnails/020/765/399/small/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg",
     },
   },
   { timestamps: true }
