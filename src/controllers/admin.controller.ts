@@ -58,8 +58,8 @@ export const loginAdmin = TryCatch(
     res
       .cookie("cookie", token, {
         httpOnly: true,
-        sameSite: "none",
-        maxAge: 15 * 60 * 60 * 1000,
+        sameSite: "lax",
+        maxAge: 24 * 60 * 60 * 1000,
       })
       .status(202)
       .json({ success: true, admin: isExistAdmin });
@@ -82,6 +82,44 @@ export const deleteAdmin = TryCatch(async (req, res, next) => {
 
 export const getLoginAdmin = TryCatch(async (req, res, next) => {
   const { user } = req;
+  console.log(`user : `, user);
   if (!user) return next(new errorHandler("You should login first", 401));
-  res.status(200).json({ success: true, user });
+  res.status(200).json({ success: true, admin: user });
+});
+
+export const updateAdmin = TryCatch(async (req, res, next) => {
+  const id = req.params.id;
+
+  if (req.user.id != id)
+    return next(new errorHandler("You can update only your account", 401));
+
+  if (req.body.email) {
+    const isExistEmail = await Admin.findOne({ email: req.body.email });
+    if (isExistEmail)
+      return next(new errorHandler("Email already exists", 401));
+  }
+
+  if (req.body.password) {
+    req.body.password = bcryptjs.hashSync(req.body.password, 10);
+  }
+
+  const updatedAdmin = await Admin.findByIdAndUpdate(
+    id,
+    {
+      $set: {
+        email: req.body.email,
+        password: req.body.password,
+        name: req.body.name,
+      },
+    },
+    { new: true }
+  ).lean(); // Converts to plain JavaScript object
+
+  if (!updatedAdmin) {
+    return next(new errorHandler("Admin not found", 404));
+  }
+
+  const { password, ...rest } = updatedAdmin;
+
+  res.status(200).json(rest);
 });
