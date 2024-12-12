@@ -3,6 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import { TryCatch } from "../middlewares/error.middleware.js";
 import { Admin } from "../models/admin.model.js";
 import errorHandler from "../utils/errorHandler.utile.js";
+import jwt from "jsonwebtoken";
 
 export const createAdmin = TryCatch(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -49,7 +50,19 @@ export const loginAdmin = TryCatch(
 
     if (!matchPass) return next(new errorHandler("Incorrect Password", 400));
 
-    res.status(202).json({ success: true, admin: isExistAdmin });
+    const token = jwt.sign(
+      { _id: isExistAdmin._id },
+      process.env.SECRET_KEY as string
+    );
+
+    res
+      .cookie("cookie", token, {
+        httpOnly: true,
+        sameSite: "none",
+        maxAge: 15 * 60 * 60 * 1000,
+      })
+      .status(202)
+      .json({ success: true, admin: isExistAdmin });
   }
 );
 
@@ -65,4 +78,10 @@ export const deleteAdmin = TryCatch(async (req, res, next) => {
   res
     .status(200)
     .json({ success: true, message: "Admin successfully Deleted" });
+});
+
+export const getLoginAdmin = TryCatch(async (req, res, next) => {
+  const { user } = req;
+  if (!user) return next(new errorHandler("You should login first", 401));
+  res.status(200).json({ success: true, user });
 });
