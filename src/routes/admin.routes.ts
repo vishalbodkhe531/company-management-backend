@@ -3,7 +3,9 @@ import {
   createAdmin,
   deleteAdmin,
   getLoginAdmin,
+  googleLogin,
   loginAdmin,
+  logoutAdmin,
   updateAdmin,
 } from "../controllers/admin.controller.js";
 import { isAuthenticat } from "../middlewares/auth.middleware.js";
@@ -11,9 +13,11 @@ import { isAuthenticat } from "../middlewares/auth.middleware.js";
 const adminRoutes = express.Router();
 
 adminRoutes.get("/logged", isAuthenticat, getLoginAdmin);
+adminRoutes.get("/logout", logoutAdmin);
 
 adminRoutes.post("/new", createAdmin);
 adminRoutes.post("/login", loginAdmin);
+adminRoutes.post("/google-login", googleLogin);
 
 adminRoutes.route("/:id").delete(deleteAdmin).put(isAuthenticat, updateAdmin);
 

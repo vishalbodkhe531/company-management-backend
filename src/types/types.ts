@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { Document } from "mongoose";
 
 export type controllerType = (
   req: Request,
@@ -13,4 +14,12 @@ export interface newAdminRequestBody {
   gender: string;
   _id: string;
   dob: Date;
+}
+
+export interface AdminDocument extends Document {
+  name: string;
+  email: string;
+  password: string;
+  profilePic?: string;
+  gender?: string;
 }

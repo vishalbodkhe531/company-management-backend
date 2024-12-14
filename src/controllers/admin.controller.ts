@@ -82,44 +82,98 @@ export const deleteAdmin = TryCatch(async (req, res, next) => {
 
 export const getLoginAdmin = TryCatch(async (req, res, next) => {
   const { user } = req;
-  console.log(`user : `, user);
   if (!user) return next(new errorHandler("You should login first", 401));
   res.status(200).json({ success: true, admin: user });
 });
 
+export const logoutAdmin = TryCatch(async (req, res, next) => {
+  res
+    .clearCookie("cookie")
+    .status(200)
+    .json({ success: true, message: "Logout Successfully" });
+});
+
 export const updateAdmin = TryCatch(async (req, res, next) => {
-  const id = req.params.id;
+  const { id } = req.params;
+  let { name, email, password, gender } = req.body;
 
   if (req.user.id != id)
     return next(new errorHandler("You can update only your account", 401));
 
-  if (req.body.email) {
-    const isExistEmail = await Admin.findOne({ email: req.body.email });
-    if (isExistEmail)
-      return next(new errorHandler("Email already exists", 401));
+  const admin = await Admin.findById(id);
+
+  if (!admin) return next(new errorHandler("Admin not found", 404));
+
+  if (password) {
+    password = bcryptjs.hashSync(req.body.password, 10);
   }
 
-  if (req.body.password) {
-    req.body.password = bcryptjs.hashSync(req.body.password, 10);
+  admin.name = name || admin.name;
+  admin.email = email || admin.email;
+  admin.password = password || admin.password;
+  admin.gender = gender || admin.gender;
+
+  const updatedAdmin = await admin.save();
+
+  res.status(200).json({
+    success: true,
+    message: "Admin profile updated successfully",
+    data: updatedAdmin,
+  });
+});
+
+export const googleLogin = TryCatch(async (req, res, next) => {
+  const { name, email, profilePic, gender } = req.body;
+
+  const isExisted = await Admin.findOne({ email });
+
+  if (isExisted) {
+    const token = jwt.sign(
+      { _id: isExisted._id },
+      process.env.SECRET_KEY as string
+    );
+
+    const { password, ...userData } = isExisted.toObject();
+
+    res
+      .cookie("cookie", token, {
+        httpOnly: true,
+        sameSite: "lax",
+        maxAge: 24 * 60 * 60 * 1000,
+      })
+      .status(200)
+      .json(userData);
+    return;
   }
 
-  const updatedAdmin = await Admin.findByIdAndUpdate(
-    id,
-    {
-      $set: {
-        email: req.body.email,
-        password: req.body.password,
-        name: req.body.name,
-      },
-    },
-    { new: true }
-  ).lean(); // Converts to plain JavaScript object
+  const password = Math.floor(Math.random() * 10000000 + 10000000).toString();
 
-  if (!updatedAdmin) {
-    return next(new errorHandler("Admin not found", 404));
-  }
+  const hashPass = bcryptjs.hashSync(password, 10);
 
-  const { password, ...rest } = updatedAdmin;
+  const newUser = new Admin({
+    name,
+    email,
+    password: hashPass,
+    profilePic,
+    gender,
+  });
 
-  res.status(200).json(rest);
+  await newUser.save();
+
+  console.log("newUser : ");
+
+  const { password: xyz, ...userData } = newUser.toObject();
+
+  const token = jwt.sign(
+    { _id: newUser._id },
+    process.env.SECRET_KEY as string
+  );
+  res
+    .cookie("cookie", token, {
+      httpOnly: true,
+      sameSite: "lax",
+      maxAge: 24 * 60 * 60 * 1000,
+    })
+    .status(201)
+    .json(userData);
 });
