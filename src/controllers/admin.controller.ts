@@ -4,22 +4,21 @@ import { TryCatch } from "../middlewares/error.middleware.js";
 import { Admin } from "../models/admin.model.js";
 import errorHandler from "../utils/errorHandler.utile.js";
 import jwt from "jsonwebtoken";
+import { sendMail } from "../utils/mailar.js";
+import OTP from "../models/OTP.model.js";
 
 export const createAdmin = TryCatch(
   async (req: Request, res: Response, next: NextFunction) => {
     const { email, name, password, profilePic, gender } = req.body;
 
     if (!email || !name || !password)
-      return next(new errorHandler("Fill the all fileds", 400));
+      return next(new errorHandler("All fields are required", 400));
 
     const isExistEmail = await Admin.findOne({ email });
-
     if (isExistEmail)
-      return next(new errorHandler("Email already exist !!", 400));
+      return next(new errorHandler("Email already exists", 400));
 
     const securePass = bcryptjs.hashSync(password, 10);
-
-    console.log(gender);
 
     await Admin.create({
       name,
@@ -30,10 +29,57 @@ export const createAdmin = TryCatch(
     });
 
     res
-      .status(200)
-      .json({ success: true, message: "Admin successfully created !!" });
+      .status(201)
+      .json({ success: true, message: "Admin successfully created!" });
   }
 );
+
+export const sendOTP = TryCatch(async (req, res, next) => {
+  const { email } = req.body;
+
+  const verificationOTP = Math.floor(
+    100000 + Math.random() * 900000
+  ).toString();
+
+  const expiresAt = new Date(Date.now() + 5 * 60 * 1000); //OTP valid for 5 minutes
+
+  const sendOTPMail = await sendMail(
+    process.env.EMAIL_USER as string,
+    email,
+    "Verify Your Email",
+    `Your verification OTP is: ${verificationOTP}`
+  );
+
+  if (!sendOTPMail)
+    return next(new errorHandler("Failed to send verification email", 500));
+
+  await OTP.create({ email, verificationCode: verificationOTP, expiresAt });
+
+  res.status(200).json({ message: "OTP sent successfully" });
+});
+
+export const verificationOTP = TryCatch(async (req, res, next) => {
+  const { email, verificationCode } = req.body;
+
+  if (!email || !verificationCode) {
+    res.status(400).json({ message: "Email and OTP are required." });
+  }
+
+  const record = await OTP.findOne({ email });
+
+  if (!record) return next(new errorHandler("Invalid OTP !!", 400));
+
+  if (new Date() > record.expiresAt)
+    return next(new errorHandler("OTP has expired !!", 400));
+
+  if (record.verificationCode !== verificationCode) {
+    res.status(400).json({ message: "Incorrect OTP." });
+  }
+
+  await OTP.deleteOne({ email });
+
+  res.status(200).json({ message: "OTP verified successfully." });
+});
 
 export const loginAdmin = TryCatch(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -96,9 +142,6 @@ export const logoutAdmin = TryCatch(async (req, res, next) => {
 export const updateAdmin = TryCatch(async (req, res, next) => {
   const { id } = req.params;
   let { name, email, password, gender } = req.body;
-
-  if (req.user.id != id)
-    return next(new errorHandler("You can update only your account", 401));
 
   const admin = await Admin.findById(id);
 

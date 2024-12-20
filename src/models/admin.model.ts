@@ -6,6 +6,9 @@ interface AdminDocument extends Document {
   password: string;
   profilePic: string;
   gender: string;
+  isVerified: boolean;
+  verificationCode: string;
+  OTPexpiresAt: Date;
 }
 
 const adminSchema = new Schema<AdminDocument>(
@@ -40,6 +43,17 @@ const adminSchema = new Schema<AdminDocument>(
       type: String,
       default:
         "https://static.vecteezy.com/system/resources/thumbnails/020/765/399/small/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg",
+    },
+
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+
+    verificationCode: String,
+
+    OTPexpiresAt: {
+      type: Date,
     },
   },
   { timestamps: true }

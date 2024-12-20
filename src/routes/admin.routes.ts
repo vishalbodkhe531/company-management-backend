@@ -6,7 +6,9 @@ import {
   googleLogin,
   loginAdmin,
   logoutAdmin,
+  sendOTP,
   updateAdmin,
+  verificationOTP,
 } from "../controllers/admin.controller.js";
 import { isAuthenticat } from "../middlewares/auth.middleware.js";
 
@@ -18,6 +20,8 @@ adminRoutes.get("/logout", logoutAdmin);
 adminRoutes.post("/new", createAdmin);
 adminRoutes.post("/login", loginAdmin);
 adminRoutes.post("/google-login", googleLogin);
+adminRoutes.post("/varify-otp", verificationOTP);
+adminRoutes.post("/send-otp", sendOTP);
 
 adminRoutes.route("/:id").delete(deleteAdmin).put(isAuthenticat, updateAdmin);
 
