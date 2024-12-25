@@ -53,9 +53,19 @@ export const sendOTP = TryCatch(async (req, res, next) => {
   if (!sendOTPMail)
     return next(new errorHandler("Failed to send verification email", 500));
 
+  const isExistOTP = await OTP.findOne({ email });
+
+  if (isExistOTP) {
+    await OTP.findOneAndUpdate(
+      { email },
+      { $set: { email, verificationCode: verificationOTP, expiresAt } },
+      { new: true }
+    );
+  }
+
   await OTP.create({ email, verificationCode: verificationOTP, expiresAt });
 
-  res.status(200).json({ message: "OTP sent successfully" });
+  res.status(200).json({ success: true, message: "OTP sent successfully" });
 });
 
 export const verificationOTP = TryCatch(async (req, res, next) => {
@@ -72,13 +82,14 @@ export const verificationOTP = TryCatch(async (req, res, next) => {
   if (new Date() > record.expiresAt)
     return next(new errorHandler("OTP has expired !!", 400));
 
-  if (record.verificationCode !== verificationCode) {
-    res.status(400).json({ message: "Incorrect OTP." });
-  }
+  if (record.verificationCode !== verificationCode)
+    return next(new errorHandler("Incorrect OTP", 400));
 
   await OTP.deleteOne({ email });
 
-  res.status(200).json({ message: "OTP verified successfully." });
+  res
+    .status(200)
+    .json({ success: true, message: "OTP verified successfully." });
 });
 
 export const loginAdmin = TryCatch(

@@ -8,6 +8,7 @@ interface AdminDocument extends Document {
   gender: string;
   isVerified: boolean;
   verificationCode: string;
+  role: string;
   OTPexpiresAt: Date;
 }
 
@@ -50,11 +51,14 @@ const adminSchema = new Schema<AdminDocument>(
       default: false,
     },
 
+    role: {
+      type: String,
+      default: "admin",
+    },
+
     verificationCode: String,
 
-    OTPexpiresAt: {
-      type: Date,
-    },
+    OTPexpiresAt: Date,
   },
   { timestamps: true }
 );
