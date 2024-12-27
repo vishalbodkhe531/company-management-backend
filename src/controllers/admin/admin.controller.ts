@@ -1,11 +1,11 @@
 import bcryptjs from "bcryptjs";
 import { NextFunction, Request, Response } from "express";
-import { TryCatch } from "../middlewares/error.middleware.js";
-import { Admin } from "../models/admin.model.js";
-import errorHandler from "../utils/errorHandler.utile.js";
+import { TryCatch } from "../../middlewares/error.middleware.js";
+import { Admin } from "../../models/admin-model/admin.model.js";
+import errorHandler from "../../utils/errorHandler.utile.js";
 import jwt from "jsonwebtoken";
-import { sendMail } from "../utils/mailar.js";
-import OTP from "../models/OTP.model.js";
+import { sendMail } from "../../utils/mailar.js";
+import OTP from "../../models/admin-model/OTP.model.js";
 
 export const createAdmin = TryCatch(
   async (req: Request, res: Response, next: NextFunction) => {

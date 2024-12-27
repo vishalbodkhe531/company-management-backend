@@ -1,4 +1,4 @@
-import { Admin } from "../models/admin.model.js";
+import { Admin } from "../models/admin-model/admin.model.js";
 import errorHandler from "../utils/errorHandler.utile.js";
 import { TryCatch } from "./error.middleware.js";
 import jwt from "jsonwebtoken";

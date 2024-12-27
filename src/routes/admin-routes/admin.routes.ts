@@ -1,4 +1,5 @@
 import express from "express";
+import { isAuthenticat } from "../../middlewares/auth.middleware.js";
 import {
   createAdmin,
   deleteAdmin,
@@ -9,8 +10,19 @@ import {
   sendOTP,
   updateAdmin,
   verificationOTP,
-} from "../controllers/admin.controller.js";
-import { isAuthenticat } from "../middlewares/auth.middleware.js";
+} from "../../controllers/admin/admin.controller.js";
+// import {
+//   createAdmin,
+//   deleteAdmin,
+//   getLoginAdmin,
+//   googleLogin,
+//   loginAdmin,
+//   logoutAdmin,
+//   sendOTP,
+//   updateAdmin,
+//   verificationOTP,
+// } from "../../controllers/admin/admin.controller.js";
+// import { isAuthenticat } from "../../middlewares/auth.middleware.js";
 
 const adminRoutes = express.Router();
 

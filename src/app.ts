@@ -2,9 +2,10 @@ import { config } from "dotenv";
 import express, { NextFunction, Request, Response } from "express";
 import { dbConnection } from "./db/dbConnection.js";
 import { errorMiddleware } from "./middlewares/error.middleware.js";
-import adminRoutes from "./routes/admin.routes.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import projectRoutes from "./routes/admin-routes/admin-project.routes.js";
+import adminRoutes from "./routes/admin-routes/admin.routes.js";
 
 config({ path: "./.env" });
 
@@ -14,7 +15,6 @@ const app = express();
 
 app.use(express.json());
 
-// app.use(cors());
 const allowedOrigins = [process.env.CLIENT_URL || "http://localhost:5173"];
 
 app.use(
@@ -36,7 +36,9 @@ app.get("/", (req: Request, res: Response, next: NextFunction) => {
   res.send("hello");
 });
 
+// Admin Routes
 app.use("/api/admin", adminRoutes);
+app.use("/api/admin/project", projectRoutes);
 
 app.use(errorMiddleware);
 
