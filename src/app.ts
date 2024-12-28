@@ -6,6 +6,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import projectRoutes from "./routes/admin-routes/admin-project.routes.js";
 import adminRoutes from "./routes/admin-routes/admin.routes.js";
+import { isAuthenticat } from "./middlewares/auth.middleware.js";
 
 config({ path: "./.env" });
 
@@ -38,7 +39,7 @@ app.get("/", (req: Request, res: Response, next: NextFunction) => {
 
 // Admin Routes
 app.use("/api/admin", adminRoutes);
-app.use("/api/admin/project", projectRoutes);
+app.use("/api/admin/project", isAuthenticat, projectRoutes);
 
 app.use(errorMiddleware);
 

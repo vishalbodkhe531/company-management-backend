@@ -36,3 +36,8 @@ export const newProject = TryCatch(async (req, res, next) => {
     .status(200)
     .json({ success: true, message: "Project created successfully" });
 });
+
+export const allProjects = TryCatch(async (req, res, next) => {
+  const allProjects = await Project.find({});
+  res.status(200).json({ success: true, allProjects });
+});

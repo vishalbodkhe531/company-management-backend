@@ -11,18 +11,6 @@ import {
   updateAdmin,
   verificationOTP,
 } from "../../controllers/admin/admin.controller.js";
-// import {
-//   createAdmin,
-//   deleteAdmin,
-//   getLoginAdmin,
-//   googleLogin,
-//   loginAdmin,
-//   logoutAdmin,
-//   sendOTP,
-//   updateAdmin,
-//   verificationOTP,
-// } from "../../controllers/admin/admin.controller.js";
-// import { isAuthenticat } from "../../middlewares/auth.middleware.js";
 
 const adminRoutes = express.Router();
 
