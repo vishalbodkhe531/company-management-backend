@@ -23,3 +23,7 @@ export interface AdminDocument extends Document {
   profilePic?: string;
   gender?: string;
 }
+
+export type invalidateCacheProps = {
+  project?: boolean;
+};

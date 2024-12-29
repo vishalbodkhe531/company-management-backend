@@ -7,10 +7,13 @@ import cookieParser from "cookie-parser";
 import projectRoutes from "./routes/admin-routes/admin-project.routes.js";
 import adminRoutes from "./routes/admin-routes/admin.routes.js";
 import { isAuthenticat } from "./middlewares/auth.middleware.js";
+import NodeCache from "node-cache";
 
 config({ path: "./.env" });
 
 dbConnection();
+
+export const myCache = new NodeCache(); //it data store in RAM memory (primary storage)
 
 const app = express();
 
