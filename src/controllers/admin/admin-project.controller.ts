@@ -7,7 +7,7 @@ import { invalidateCache } from "../../utils/features.js";
 export const newProject = TryCatch(async (req, res, next) => {
   const {
     projectName,
-    description,
+    projectDescription,
     startDate,
     endDate,
     budget,
@@ -26,7 +26,7 @@ export const newProject = TryCatch(async (req, res, next) => {
   // Create a new project
   await Project.create({
     projectName,
-    description,
+    projectDescription,
     startDate,
     endDate,
     budget,
@@ -55,4 +55,57 @@ export const allProjects = TryCatch(async (req, res, next) => {
   }
 
   res.status(200).json({ success: true, projects });
+});
+
+export const deleteProject = TryCatch(async (req, res, next) => {
+  const { id } = req.params;
+
+  const data = await Project.findByIdAndDelete({ _id: id });
+
+  invalidateCache({
+    project: true,
+  });
+
+  res
+    .status(200)
+    .json({ success: true, message: "Project deleted successfullty !!" });
+});
+
+export const updateProject = TryCatch(async (req, res, next) => {
+  const { id } = req.params;
+
+  const {
+    projectName,
+    projectDescription,
+    startDate,
+    endDate,
+    budget,
+    projectManager,
+  } = req.body;
+
+  const isExistProject = await Project.findById({ _id: id });
+
+  if (!isExistProject)
+    return next(new errorHandler("Project is not exist in dataDase !!", 404));
+
+  const updatedProject = await Project.findByIdAndUpdate(
+    id,
+    {
+      $set: {
+        projectName,
+        projectDescription,
+        startDate,
+        endDate,
+        budget,
+        projectManager,
+      },
+    },
+    { new: true }
+  );
+
+  invalidateCache({
+    project: true,
+  });
+
+  res.status(200).json(updatedProject);
 });

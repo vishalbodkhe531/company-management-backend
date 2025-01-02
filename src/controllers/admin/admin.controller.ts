@@ -156,6 +156,8 @@ export const updateAdmin = TryCatch(async (req, res, next) => {
 
   const admin = await Admin.findById(id);
 
+  console.log(req.body);
+
   if (!admin) return next(new errorHandler("Admin not found", 404));
 
   if (password) {
