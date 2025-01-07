@@ -8,6 +8,7 @@ import projectRoutes from "./routes/admin-routes/admin-project.routes.js";
 import adminRoutes from "./routes/admin-routes/admin.routes.js";
 import { isAuthenticat } from "./middlewares/auth.middleware.js";
 import NodeCache from "node-cache";
+import empRoutes from "./routes/emp-routes/emp.routes.js";
 
 config({ path: "./.env" });
 
@@ -43,6 +44,9 @@ app.get("/", (req: Request, res: Response, next: NextFunction) => {
 // Admin Routes
 app.use("/api/admin", adminRoutes);
 app.use("/api/admin/project", isAuthenticat, projectRoutes);
+
+// Employee Routes
+app.use("/api/emp", empRoutes);
 
 app.use(errorMiddleware);
 
