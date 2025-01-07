@@ -84,5 +84,3 @@ const employeeSchema = new Schema<EmployeeDoc>(
 );
 
 export const Employee = model<EmployeeDoc>("Employee", employeeSchema);
-
-// asdfasf
