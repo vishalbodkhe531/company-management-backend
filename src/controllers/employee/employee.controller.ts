@@ -58,8 +58,6 @@ export const newEmployee = TryCatch(async (req, res, next) => {
 
 export const acceptRequest = TryCatch(async (req, res, next) => {
   const id = req.params.id;
-  console.log(id);
-
   const isExist = await Employee.findById({ _id: id });
 
   if (!isExist) return next(new errorHandler("email not exist !!", 400));
@@ -80,4 +78,23 @@ export const acceptRequest = TryCatch(async (req, res, next) => {
 export const allRequests = TryCatch(async (req, res, next) => {
   const allRequests = await Employee.find();
   res.status(200).json({ success: true, allRequests });
+});
+
+export const loginEmp = TryCatch(async (req, res, next) => {
+  const { email, department, gender } = req.body;
+
+  const isExistEmail = await Employee.findOne({ email });
+
+  if (!isExistEmail) return next(new errorHandler("Email not exist !!", 400));
+
+  if (!isExistEmail.isVerified)
+    return next(new errorHandler("You are not logged.. Please wait !!", 400));
+
+  if (isExistEmail.gender !== gender)
+    return next(new errorHandler("Select correct gender", 400));
+
+  if (isExistEmail.department !== department)
+    return next(new errorHandler("Select correct department", 400));
+
+  res.status(200).json({ success: true, message: "Login successfully !!" });
 });
