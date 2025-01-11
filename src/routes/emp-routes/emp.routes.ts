@@ -3,13 +3,14 @@ import {
   acceptRequest,
   allRequests,
   newEmployee,
-  sendReqeust,
+  // sendReqeust,
 } from "../../controllers/employee/employee.controller.js";
 
 const empRoutes = express.Router();
 
 empRoutes.post("/new", newEmployee);
-empRoutes.post("/send-request", sendReqeust);
+// empRoutes.post("/send-request", sendReqeust);
+// empRoutes.post("/send-request", sendReqeust);
 empRoutes.get("/all-requests", allRequests);
 empRoutes.put("/accept-requests/:id", acceptRequest);
 
