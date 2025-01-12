@@ -11,7 +11,7 @@ interface EmployeeDoc extends Document {
   address: string;
   profilePic: string;
   gender: string;
-  isVerified: boolean;
+  isVerified: string;
   role: string;
 }
 
@@ -71,8 +71,10 @@ const employeeSchema = new Schema<EmployeeDoc>(
     },
 
     isVerified: {
-      type: Boolean,
-      default: false,
+      type: String,
+      default: "pendding",
+      enum: ["accepted", "rejected", "pendding"],
+      required: [true, "Gender is required"],
     },
 
     role: {
