@@ -1,6 +1,7 @@
 import { TryCatch } from "../../middlewares/error.middleware.js";
 import { Employee } from "../../models/emp-model/employee.model.js";
 import errorHandler from "../../utils/errorHandler.utile.js";
+import jwt from "jsonwebtoken";
 
 export const newEmployee = TryCatch(async (req, res, next) => {
   const {
@@ -66,10 +67,7 @@ export const loginEmp = TryCatch(async (req, res, next) => {
 
   if (!isExistEmail) return next(new errorHandler("Email not exist !!", 400));
 
-  if (
-    isExistEmail.isVerified === "pendding"
-    // isExistEmail.isVerified === "rejected"
-  )
+  if (isExistEmail.isVerified === "pendding")
     return next(
       new errorHandler(
         "You are not logged in.. Contact the admin to approve your request!!!",
@@ -83,7 +81,19 @@ export const loginEmp = TryCatch(async (req, res, next) => {
   if (isExistEmail.department !== department)
     return next(new errorHandler("Select correct department", 400));
 
-  res.status(200).json({ success: true, message: "Login successfully !!" });
+  const token = jwt.sign(
+    { _id: isExistEmail._id },
+    process.env.SECRET_KEY as string
+  );
+
+  res
+    .cookie("cookie", token, {
+      httpOnly: true,
+      sameSite: "lax",
+      maxAge: 24 * 60 * 60 * 1000,
+    })
+    .status(200)
+    .json({ isExistEmail });
 });
 
 export const acceptRequest = TryCatch(async (req, res, next) => {

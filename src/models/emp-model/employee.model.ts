@@ -1,6 +1,6 @@
 import { Schema, model, Document } from "mongoose";
 
-interface EmployeeDoc extends Document {
+export interface EmployeeDocument extends Document {
   firstName: string;
   lastName: string;
   phoneNumber: number;
@@ -15,7 +15,7 @@ interface EmployeeDoc extends Document {
   role: string;
 }
 
-const employeeSchema = new Schema<EmployeeDoc>(
+const employeeSchema = new Schema<EmployeeDocument>(
   {
     firstName: {
       type: String,
@@ -85,4 +85,4 @@ const employeeSchema = new Schema<EmployeeDoc>(
   { timestamps: true }
 );
 
-export const Employee = model<EmployeeDoc>("Employee", employeeSchema);
+export const Employee = model<EmployeeDocument>("Employee", employeeSchema);

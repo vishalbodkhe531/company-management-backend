@@ -3,13 +3,14 @@ import errorHandler from "../utils/errorHandler.utile.js";
 import { TryCatch } from "./error.middleware.js";
 import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
+import { Employee } from "../models/emp-model/employee.model.js";
 
 interface JwtPayloadWithId extends jwt.JwtPayload {
   _id: string;
 }
 
-export const isAuthenticat = TryCatch(
-  async (req: Request, res: Response, next: NextFunction) => {
+export const isAuthenticat = (allowedRoles: string[]) =>
+  TryCatch(async (req: Request, res: Response, next: NextFunction) => {
     const { cookie } = req.cookies;
 
     if (!cookie) return next(new errorHandler("You should login first", 401));
@@ -23,7 +24,29 @@ export const isAuthenticat = TryCatch(
       return next(new errorHandler("Invalid token payload", 401));
     }
 
-    req.user = await Admin.findById({ _id: verify._id });
+    let user = null;
+    let role = null;
+
+    user = await Admin.findById(verify._id);
+    if (user) role = "admin";
+
+    if (!user) {
+      user = await Employee.findById(verify._id);
+      console.log("user : ", user);
+      if (user) role = "employee";
+    }
+
+    // Check in Client schema
+    // if (!user) {
+    //   user = await Client.findById(verify._id);
+    //   if (user) role = "client";
+    // }
+
+    if (!user || !role) {
+      return next(new errorHandler("User not found", 404));
+    }
+
+    req.user = user;
+    req.userRole = role;
     next();
-  }
-);
+  });

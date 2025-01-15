@@ -9,6 +9,7 @@ import adminRoutes from "./routes/admin-routes/admin.routes.js";
 import { isAuthenticat } from "./middlewares/auth.middleware.js";
 import NodeCache from "node-cache";
 import empRoutes from "./routes/emp-routes/emp.routes.js";
+import getRole from "./routes/admin-routes/getLoggedUser.routes.js";
 
 config({ path: "./.env" });
 
@@ -43,7 +44,8 @@ app.get("/", (req: Request, res: Response, next: NextFunction) => {
 
 // Admin Routes
 app.use("/api/admin", adminRoutes);
-app.use("/api/admin/project", isAuthenticat, projectRoutes);
+app.use("/api/admin/project", isAuthenticat(["admin"]), projectRoutes);
+app.use("/api/get-logged-user", getRole);
 
 // Employee Routes
 app.use("/api/emp", empRoutes);

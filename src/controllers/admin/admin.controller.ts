@@ -128,8 +128,6 @@ export const deleteAdmin = TryCatch(async (req, res, next) => {
 
   const isAdminExist = await Admin.findByIdAndDelete(id);
 
-  console.log(isAdminExist);
-
   if (!isAdminExist) return next(new errorHandler("Email not found !!", 404));
 
   res
@@ -155,8 +153,6 @@ export const updateAdmin = TryCatch(async (req, res, next) => {
   let { name, email, password, gender } = req.body;
 
   const admin = await Admin.findById(id);
-
-  console.log(req.body);
 
   if (!admin) return next(new errorHandler("Admin not found", 404));
 
@@ -232,4 +228,10 @@ export const googleLogin = TryCatch(async (req, res, next) => {
     })
     .status(201)
     .json(userData);
+});
+
+export const getLoggedUser = TryCatch(async (req, res, next) => {
+  const { user } = req;
+  if (!user) return next(new errorHandler("You should login first", 401));
+  res.status(200).json({ success: true, user: user });
 });
