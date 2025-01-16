@@ -7,7 +7,7 @@ export interface EmployeeDocument extends Document {
   email: string;
   resignationDate: Date;
   qualification: string;
-  department: string;
+  skill: string;
   address: string;
   profilePic: string;
   gender: string;
@@ -54,9 +54,9 @@ const employeeSchema = new Schema<EmployeeDocument>(
       required: [true, "Qualification is required"],
     },
 
-    department: {
+    skill: {
       type: String,
-      required: [true, "Department is required"],
+      required: [true, "Skill is required"],
     },
 
     resignationDate: {
