@@ -4,7 +4,7 @@ import errorHandler from "../../utils/errorHandler.utile.js";
 import jwt from "jsonwebtoken";
 
 export const allRequests = TryCatch(async (req, res, next) => {
-  const allRequests = await Employee.find();
+  const allRequests = await Employee.find({ isVerified: "pendding" });
   res.status(200).json({ success: true, allRequests });
 });
 

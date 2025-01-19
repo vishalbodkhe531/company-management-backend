@@ -55,11 +55,6 @@ export const newEmployee = TryCatch(async (req, res, next) => {
     .json({ success: true, message: "Request Sended successfully !!" });
 });
 
-// export const allRequests = TryCatch(async (req, res, next) => {
-//   const allRequests = await Employee.find();
-//   res.status(200).json({ success: true, allRequests });
-// });
-
 export const loginEmp = TryCatch(async (req, res, next) => {
   const { email, skill, gender } = req.body;
 
@@ -96,40 +91,36 @@ export const loginEmp = TryCatch(async (req, res, next) => {
     .json({ isExistEmail });
 });
 
-// export const acceptRequest = TryCatch(async (req, res, next) => {
-//   const id = req.params.id;
-//   const isExist = await Employee.findById({ _id: id });
+export const updateEmp = TryCatch(async (req, res, next) => {
+  const { id } = req.params;
 
-//   if (!isExist) return next(new errorHandler("email not exist !!", 400));
+  if (Object.keys(req.body).length === 0) {
+    return next(new errorHandler("Nothing any change !!", 400));
+  }
 
-//   const newEmployee = await Employee.findByIdAndUpdate(
-//     id,
-//     {
-//       $set: {
-//         isVerified: "accepted",
-//       },
-//     },
-//     { new: true }
-//   );
+  if (req.body.email) {
+    const isExistEmail = await Employee.find({ email: req.body.email });
+    if (isExistEmail)
+      return next(new errorHandler("Email already exist !!", 400));
+  }
 
-//   res.status(200).json({ success: true, newEmployee });
-// });
+  const newEmp = await Employee.findByIdAndUpdate(
+    id,
+    {
+      $set: {
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        phoneNumber: req.body.phoneNumber,
+        email: req.body.email,
+        qualification: req.body.qualification,
+        skill: req.body.skill,
+        address: req.body.address,
+        profilePic: req.body.profilePic,
+        gender: req.body.gender,
+      },
+    },
+    { new: true }
+  );
 
-// export const rejectRequest = TryCatch(async (req, res, next) => {
-//   const id = req.params.id;
-//   const isExist = await Employee.findById({ _id: id });
-
-//   if (!isExist) return next(new errorHandler("email not exist !!", 400));
-
-//   const newEmployee = await Employee.findByIdAndUpdate(
-//     id,
-//     {
-//       $set: {
-//         isVerified: "rejected",
-//       },
-//     },
-//     { new: true }
-//   );
-
-//   res.status(200).json({ success: true, newEmployee });
-// });
+  res.status(201).json(newEmp);
+});

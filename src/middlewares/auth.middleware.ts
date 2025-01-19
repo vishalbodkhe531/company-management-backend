@@ -32,7 +32,6 @@ export const isAuthenticat = (allowedRoles: string[]) =>
 
     if (!user) {
       user = await Employee.findById(verify._id);
-      console.log("user : ", user);
       if (user) role = "employee";
     }
 
