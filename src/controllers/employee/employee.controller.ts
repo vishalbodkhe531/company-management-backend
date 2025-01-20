@@ -124,3 +124,10 @@ export const updateEmp = TryCatch(async (req, res, next) => {
 
   res.status(201).json(newEmp);
 });
+
+export const logout = TryCatch(async (req, res, next) => {
+  res
+    .clearCookie("cookie")
+    .status(200)
+    .json({ success: true, message: "Logout Successfully" });
+});
