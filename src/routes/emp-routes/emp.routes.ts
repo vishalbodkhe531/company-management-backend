@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  deleteEmp,
   loginEmp,
   logout,
   newEmployee,
@@ -19,7 +20,10 @@ empRoutes.get("/all-requests", allRequests);
 empRoutes.post("/new", newEmployee);
 empRoutes.post("/login", loginEmp);
 empRoutes.get("/logout", isAuthenticat(["employee"]), logout);
-empRoutes.route("/:id").put(isAuthenticat(["employee"]), updateEmp);
+empRoutes
+  .route("/:id")
+  .put(isAuthenticat(["employee"]), updateEmp)
+  .delete(isAuthenticat(["employee", "admin"]), deleteEmp);
 
 empRoutes.put("/accept-requests/:id", acceptRequest);
 empRoutes.put("/reject-requests/:id", acceptRequest);

@@ -87,7 +87,7 @@ export const loginEmp = TryCatch(async (req, res, next) => {
   );
 
   res
-    .cookie("cookie", token, {
+    .cookie("EmpCookie", token, {
       httpOnly: true,
       sameSite: "lax",
       maxAge: 24 * 60 * 60 * 1000,
@@ -140,4 +140,19 @@ export const logout = TryCatch(async (req, res, next) => {
     .clearCookie("cookie")
     .status(200)
     .json({ success: true, message: "Logout Successfully" });
+});
+
+export const deleteEmp = TryCatch(async (req, res, next) => {
+  const { id } = req.params;
+
+  const employee = await Employee.findById({ _id: id });
+
+  if (!employee) return next(new errorHandler("Employee not exist !!", 400));
+
+  await Employee.findByIdAndDelete({ _id: id });
+
+  res
+    .clearCookie("EmpCookie")
+    .status(200)
+    .json({ success: true, message: "Employee deleted successfully" });
 });
