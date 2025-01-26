@@ -1,4 +1,4 @@
-import { Schema, model, Document } from "mongoose";
+import mongoose, { Schema, model, Document } from "mongoose";
 
 export interface EmployeeDocument extends Document {
   firstName: string;
@@ -13,6 +13,11 @@ export interface EmployeeDocument extends Document {
   gender: string;
   isVerified: string;
   role: string;
+  professionalSummary: string;
+  employmentDetails: string;
+  educationDetails: string;
+  achievements: string;
+  project: Array<{ name: string; description: string }>;
 }
 
 const employeeSchema = new Schema<EmployeeDocument>(
@@ -81,6 +86,29 @@ const employeeSchema = new Schema<EmployeeDocument>(
       type: String,
       default: "employee",
     },
+
+    professionalSummary: {
+      type: String,
+    },
+
+    employmentDetails: {
+      type: String,
+    },
+
+    educationDetails: {
+      type: String,
+    },
+
+    achievements: {
+      type: String,
+    },
+
+    project: [
+      {
+        name: String,
+        description: String,
+      },
+    ],
   },
   { timestamps: true }
 );

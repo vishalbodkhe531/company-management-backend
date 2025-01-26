@@ -48,6 +48,11 @@ export const newEmployee = TryCatch(async (req, res, next) => {
     profilePic,
     gender,
     role,
+    professionalSummary: "",
+    employmentDetails: "",
+    educationDetails: "",
+    achievements: "",
+    // project
   });
 
   res
@@ -88,7 +93,7 @@ export const loginEmp = TryCatch(async (req, res, next) => {
       maxAge: 24 * 60 * 60 * 1000,
     })
     .status(200)
-    .json({ isExistEmail });
+    .json(isExistEmail);
 });
 
 export const updateEmp = TryCatch(async (req, res, next) => {
@@ -117,6 +122,11 @@ export const updateEmp = TryCatch(async (req, res, next) => {
         address: req.body.address,
         profilePic: req.body.profilePic,
         gender: req.body.gender,
+        professionalSummary: req.body.professionalSummary,
+        employmentDetails: req.body.employmentDetails,
+        educationDetails: req.body.educationDetails,
+        achievements: req.body.achievements,
+        project: req.body.project,
       },
     },
     { new: true }
