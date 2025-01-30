@@ -151,7 +151,6 @@ export const isAuthenticat = (allowedRoles: string[]) =>
       if (user) role = "employee";
     }
 
-    console.log(`first2`);
     // Check for client
     // if (!user && client) {
     //   user = await Client.findById(verify._id);
@@ -162,15 +161,11 @@ export const isAuthenticat = (allowedRoles: string[]) =>
       return next(new errorHandler("User not found", 404));
     }
 
-    console.log(`first3`);
-
     if (!allowedRoles.includes(role)) {
       return next(
         new errorHandler("Access denied: Insufficient permissions", 403)
       );
     }
-
-    console.log("user : ", user);
 
     req.user = user;
     req.userRole = role;

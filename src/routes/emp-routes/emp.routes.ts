@@ -11,6 +11,7 @@ import {
   allEmployees,
   allRequests,
   departmentDistribution,
+  empTrends,
 } from "../../controllers/admin/employe.controller.js";
 import { isAuthenticat } from "../../middlewares/auth.middleware.js";
 
@@ -37,5 +38,7 @@ empRoutes.get(
   isAuthenticat(["admin"]),
   departmentDistribution
 );
+
+empRoutes.get("/emp-trends", isAuthenticat(["admin"]), empTrends);
 
 export default empRoutes;

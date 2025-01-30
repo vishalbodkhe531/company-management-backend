@@ -52,6 +52,50 @@ export const allEmployees = TryCatch(async (req, res, next) => {
 });
 
 export const departmentDistribution = TryCatch(async (req, res, next) => {
-  const allSkills = await Employee.distinct("skill");
-  res.status(200).json({ success: true, allSkills });
+  const allSkills = await Employee.aggregate([
+    { $group: { _id: "$skill", count: { $sum: 1 } } },
+  ]);
+
+  res.status(200).json({ allSkills });
+});
+
+export const empTrends = TryCatch(async (req, res, next) => {
+  const employeeTrend = await Employee.aggregate([
+    {
+      $group: {
+        _id: { $month: "$resignationDate" },
+        count: { $sum: 1 },
+      },
+    },
+    { $sort: { _id: 1 } },
+  ]);
+
+  const labels = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+  const data = new Array(12).fill(0);
+
+  employeeTrend.forEach(({ _id, count }) => {
+    data[_id - 1] = count;
+  });
+
+  res.status(200).json({
+    labels,
+    datasets: [
+      {
+        data,
+      },
+    ],
+  });
 });
