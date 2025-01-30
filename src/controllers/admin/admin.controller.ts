@@ -113,7 +113,7 @@ export const loginAdmin = TryCatch(
     );
 
     res
-      .cookie("AdminCookie", token, {
+      .cookie("admin", token, {
         httpOnly: true,
         sameSite: "lax",
         maxAge: 24 * 60 * 60 * 1000,
@@ -143,7 +143,7 @@ export const getLoginAdmin = TryCatch(async (req, res, next) => {
 
 export const logoutAdmin = TryCatch(async (req, res, next) => {
   res
-    .clearCookie("AdminCookie")
+    .clearCookie("admin")
     .status(200)
     .json({ success: true, message: "Logout Successfully" });
 });
@@ -188,7 +188,7 @@ export const googleLogin = TryCatch(async (req, res, next) => {
     const { password, ...userData } = isExisted.toObject();
 
     res
-      .cookie("cookie", token, {
+      .cookie("admin", token, {
         httpOnly: true,
         sameSite: "lax",
         maxAge: 24 * 60 * 60 * 1000,
@@ -221,7 +221,7 @@ export const googleLogin = TryCatch(async (req, res, next) => {
     process.env.SECRET_KEY as string
   );
   res
-    .cookie("AdminCookie", token, {
+    .cookie("admin", token, {
       httpOnly: true,
       sameSite: "lax",
       maxAge: 24 * 60 * 60 * 1000,

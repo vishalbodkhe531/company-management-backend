@@ -10,6 +10,7 @@ import {
   acceptRequest,
   allEmployees,
   allRequests,
+  departmentDistribution,
 } from "../../controllers/admin/employe.controller.js";
 import { isAuthenticat } from "../../middlewares/auth.middleware.js";
 
@@ -28,5 +29,13 @@ empRoutes
 empRoutes.put("/accept-requests/:id", acceptRequest);
 empRoutes.put("/reject-requests/:id", acceptRequest);
 empRoutes.get("/all-employee", allEmployees);
+
+// graph routes
+
+empRoutes.get(
+  "/department-distribution",
+  isAuthenticat(["admin"]),
+  departmentDistribution
+);
 
 export default empRoutes;

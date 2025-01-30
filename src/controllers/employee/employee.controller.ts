@@ -87,7 +87,7 @@ export const loginEmp = TryCatch(async (req, res, next) => {
   );
 
   res
-    .cookie("EmpCookie", token, {
+    .cookie("employee", token, {
       httpOnly: true,
       sameSite: "lax",
       maxAge: 24 * 60 * 60 * 1000,
@@ -137,7 +137,7 @@ export const updateEmp = TryCatch(async (req, res, next) => {
 
 export const logout = TryCatch(async (req, res, next) => {
   res
-    .clearCookie("cookie")
+    .clearCookie("employee")
     .status(200)
     .json({ success: true, message: "Logout Successfully" });
 });
@@ -152,7 +152,7 @@ export const deleteEmp = TryCatch(async (req, res, next) => {
   await Employee.findByIdAndDelete({ _id: id });
 
   res
-    .clearCookie("EmpCookie")
+    .clearCookie("employee")
     .status(200)
     .json({ success: true, message: "Employee deleted successfully" });
 });

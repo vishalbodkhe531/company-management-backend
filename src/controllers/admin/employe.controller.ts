@@ -50,3 +50,8 @@ export const allEmployees = TryCatch(async (req, res, next) => {
   const employees = await Employee.find({ isVerified: "accepted" });
   res.status(200).json({ allRequests: employees });
 });
+
+export const departmentDistribution = TryCatch(async (req, res, next) => {
+  const allSkills = await Employee.distinct("skill");
+  res.status(200).json({ success: true, allSkills });
+});
